@@ -20,6 +20,10 @@ function App() {
       console.log("All Todos:", todos);
     }
   }
+  function deleteTodo(id) {
+    const updatedTodos = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodos);
+  }
   function changeCircle() {
    setChecked(!checked)
   }
@@ -65,7 +69,7 @@ function App() {
             </div>
             <div className='toDoText'style={{color: isDark ? "#C8CBE7" : "#494C6B"}}>{todo.text}</div>
             </div>
-            <svg className='cross' xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path fill="#494C6B" fillRule="evenodd" d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"/></svg>
+            <svg onClick={()=>deleteTodo(todo.id)}className='cross' xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path fill="#494C6B" fillRule="evenodd" d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"/></svg>
             <hr style={{backgroundColor: isDark ? "#393A4B" : "#E3E4F1"}}/>
             </div>
           ))}
