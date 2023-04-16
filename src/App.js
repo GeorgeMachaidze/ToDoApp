@@ -16,16 +16,26 @@ function App() {
     if(todoText.trim() !== ""){
       const newTodo = {id: Date.now(), text: todoText, completed: checked};
       setTodos([...todos, newTodo]);
-      console.log("Added Todo:", newTodo);
-      console.log("All Todos:", todos);
     }
+    console.log(todos);
   }
   function deleteTodo(id) {
     const updatedTodos = todos.filter(todo => todo.id !== id);
     setTodos(updatedTodos);
   }
-  function changeCircle() {
-   setChecked(!checked)
+  function deleteAll(){
+    setTodos([]);
+  }
+  function changeCircle(id) {
+    setTodos(
+      todos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, completed: !todo.completed };
+        } else {
+          return todo;
+        }
+      })
+    );
   }
   function makeDark(){
   setIsDark(!isDark)
@@ -41,7 +51,7 @@ function App() {
       
         </div>
         <div className='input' style={{backgroundColor: isDark ? "rgba(37, 39, 61, 1)" : "white"}}>
-          <div className='circle' onClick={() => changeCircle()} style={{ backgroundColor: checked ? "#55DDFF" : "transparent" }}>
+          <div className='circle' onClick={() => changeCircle(todos.id)} style={{ backgroundColor: todos.id ? "#55DDFF" : "transparent" }}>
           {checked ? (
         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="9"><path fill="none" stroke="#FFF" strokeWidth="2" d="M1 4.304L3.696 7l6-6"/></svg> 
       ) : ""}
@@ -62,8 +72,8 @@ function App() {
           {todos.map(todo => (
             <div className="toDo"key={todo.id}>
               <div className='checkAndText'>
-              <div className='circle' onClick={() => changeCircle()} style={{ backgroundColor: checked ? "#55DDFF" : "transparent" }}>
-            {checked ? (
+              <div className='circle' onClick={() => changeCircle(todo.id)} style={{ backgroundColor: todo.completed  ? "#55DDFF" : "transparent" }}>
+            {todo.completed ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="11" height="9"><path fill="none" stroke="#FFF" strokeWidth="2" d="M1 4.304L3.696 7l6-6"/></svg> 
         ) : ""}
             </div>
@@ -73,6 +83,15 @@ function App() {
             <hr style={{backgroundColor: isDark ? "#393A4B" : "#E3E4F1"}}/>
             </div>
           ))}
+          <div className='toDoFooter'style={{color: isDark ? "#5B5E7E" : "#9495A5"}}>
+            <p>{todos.length} items left</p>
+            <p onClick={()=>deleteAll()}>Clear Completed</p>
+          </div>
+          <div className='footer'>
+          <h1>All</h1>
+          <h1>Active</h1>
+          <h1>Completed</h1>
+        </div>
         </div>
         )}
      </div>
