@@ -8,23 +8,31 @@ import moon from "./images/icon-moon.svg"
 function App() {
 
   
-  const [checked, setChecked] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [todos, setTodos] = useState([]);
+  const [status, setStatus] = useState("all");
+  const completedTodos = todos.filter(todo => todo.completed);
+  const activeTodos = todos.filter(todo => !todo.completed);
+  const array = status === "all" ? todos : status === "active" ? activeTodos : completedTodos;
+  
 
   function addTodo(todoText) {
     if(todoText.trim() !== ""){
-      const newTodo = {id: Date.now(), text: todoText, completed: checked};
+      const newTodo = {id: Date.now(), text: todoText, completed: false};
       setTodos([...todos, newTodo]);
+      console.log(todos);
     }
-    console.log(todos);
   }
   function deleteTodo(id) {
     const updatedTodos = todos.filter(todo => todo.id !== id);
     setTodos(updatedTodos);
+    if(completedTodos.length === 0 || activeTodos.length === 0){
+      setStatus("all");
+    }
   }
-  function deleteAll(){
-    setTodos([]);
+  function deleteComplated() {
+    const filteredTodos = todos.filter(todo => !todo.completed); 
+    setTodos(filteredTodos); 
   }
   function changeCircle(id) {
     setTodos(
@@ -38,9 +46,9 @@ function App() {
     );
   }
   function makeDark(){
-  setIsDark(!isDark)
+  setIsDark(!isDark);
   }
-
+  
   return (
     <div className={isDark ? "app dark" : 'app'}  >
       <div className={isDark ? "app dark" : ""}>
@@ -52,7 +60,7 @@ function App() {
         </div>
         <div className='input' style={{backgroundColor: isDark ? "rgba(37, 39, 61, 1)" : "white"}}>
           <div className='circle' onClick={() => changeCircle(todos.id)} style={{ backgroundColor: todos.id ? "#55DDFF" : "transparent" }}>
-          {checked ? (
+          {false ? (
         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="9"><path fill="none" stroke="#FFF" strokeWidth="2" d="M1 4.304L3.696 7l6-6"/></svg> 
       ) : ""}
           </div>
@@ -68,8 +76,8 @@ function App() {
         </div>
       
 
-      {todos.length > 0 &&( <div className='toDos' style={{backgroundColor: isDark ? "#25273D" : "white",boxShadow: isDark ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)" : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)" }}>
-          {todos.map(todo => (
+      {array.length > 0 &&( <div className='toDos' style={{backgroundColor: isDark ? "#25273D" : "white",boxShadow: isDark ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)" : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)" }}>
+          {array.map(todo => (
             <div className="toDo"key={todo.id}>
               <div className='checkAndText'>
               <div className='circle' onClick={() => changeCircle(todo.id)} style={{ backgroundColor: todo.completed  ? "#55DDFF" : "transparent" }}>
@@ -84,13 +92,21 @@ function App() {
             </div>
           ))}
           <div className='toDoFooter'style={{color: isDark ? "#5B5E7E" : "#9495A5"}}>
-            <p>{todos.length} items left</p>
-            <p onClick={()=>deleteAll()}>Clear Completed</p>
+            <p>{array.length} items left</p>
+            <p onClick={()=>deleteComplated()}>Clear Completed</p>
           </div>
           <div className='footer'>
-          <h1>All</h1>
-          <h1>Active</h1>
-          <h1>Completed</h1>
+          <h1 onClick={()=> setStatus("all")} style={{color: status == "all" ? "#3A7CFD" : "#9495A5"}}>All</h1>
+          <h1 onClick={() => {if (activeTodos.length >= 1) {
+          setStatus("active");
+           }
+          }}
+          style={{color: status === "active" ? "#3A7CFD" : "#9495A5"}}>Active</h1>
+          <h1 onClick={()=> {if (completedTodos.length >= 1) {
+          setStatus("completed");
+          }
+          }} 
+          style={{color: status == "completed" ? "#3A7CFD" : "#9495A5"}}>Completed</h1>
         </div>
         </div>
         )}
