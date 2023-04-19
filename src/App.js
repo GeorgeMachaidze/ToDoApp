@@ -57,7 +57,7 @@ function App() {
 
   return (
     <div className={isDark ? "app dark" : "app"}>
-      <div className={isDark ? "app dark" : ""}>
+      <div className={isDark ? "app dark" : "app"}>
         <div className="headText">
           <img src={logo} alt="TODO"
           onClick={() => window.location.reload()}

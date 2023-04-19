@@ -151,3 +151,32 @@ h1{
   font-size: 14px;
   color: #9495A5;
 }
+@media screen and (min-width: 1440px){
+  .app{
+    background-image: url(./images/bg-desktop-light.jpg);
+  }
+  .app.dark{
+    background-image: url(./images/bg-desktop-dark.jpg);
+  }
+  .headText{
+    margin-left: 450px;
+    margin-right: 450px;
+  }
+  .input{
+    margin-left: 450px;
+    margin-right: 450px;
+  }
+  .mainInput{
+    width: 450px
+  }
+  .toDos{
+    margin-left: 450px;
+    margin-right: 450px;
+  }
+  .footer{
+    order: 1;
+    margin-top: -50px;
+    margin-left: 450px;
+    margin-right: 450px;
+  }
+}
