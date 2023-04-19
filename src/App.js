@@ -136,7 +136,7 @@ function App() {
                       style={{
                         background: todo.completed
                           ? "linear-gradient(rgba(85, 221, 255, 1), rgba(192, 88, 243, 1))"
-                          : "transparent",
+                          : "transparent",  
                       }}
                     >
                       {todo.completed ? (
@@ -158,7 +158,11 @@ function App() {
                     </div>
                     <div
                       className="toDoText"
-                      style={{ color: isDark ? "#C8CBE7" : "#494C6B" }}
+                      style={{
+                      textDecorationLine: todo.completed ? "line-through" : "none",
+                      color: todo.completed && !isDark ? "#D1D2DA" : !todo.completed && isDark ? "#C8CBE7" : todo.completed && isDark ? "#494C6B" : "#494C6B"
+                    }}
+                      
                     >
                       {todo.text}
                     </div>
@@ -186,7 +190,7 @@ function App() {
                 style={{ color: isDark ? "#5B5E7E" : "#9495A5" }}
               >
                 <p>{array.length} items left</p>
-                <p onClick={() => deleteComplated()}>Clear Completed</p>
+                <p className="clear" onClick={() => deleteComplated()}>Clear Completed</p>
               </div>
             </div>
             <div

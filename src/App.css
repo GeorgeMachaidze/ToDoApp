@@ -179,4 +179,7 @@ h1{
     margin-left: 450px;
     margin-right: 450px;
   }
+  .circle,.clear,.cross,h1,img{
+    cursor: pointer;
+  }
 }
