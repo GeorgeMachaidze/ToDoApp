@@ -209,21 +209,13 @@ function App() {
                 All
               </h1>
               <h1
-                onClick={() => {
-                  if (activeTodos.length >= 1) {
-                    setStatus("active");
-                  }
-                }}
+                onClick={() => setStatus("active")}
                 style={{ color: status === "active" ? "#3A7CFD" : "#9495A5" }}
               >
                 Active
               </h1>
               <h1
-                onClick={() => {
-                  if (completedTodos.length >= 1) {
-                    setStatus("completed");
-                  }
-                }}
+                onClick={() => setStatus("completed")}
                 style={{ color: status == "completed" ? "#3A7CFD" : "#9495A5" }}
               >
                 Completed
