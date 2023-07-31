@@ -6,19 +6,7 @@ import sun from "./images/icon-sun.svg";
 import moon from "./images/icon-moon.svg";
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
-  const [todos, setTodos] = useState([]);
-  const [status, setStatus] = useState("all");
-  const [checkedTodo, setCheckedTodo] = useState(false);
-  const completedTodos = todos.filter((todo) => todo.completed);
-  const activeTodos = todos.filter((todo) => !todo.completed);
-  const array =
-    status === "all"
-      ? todos
-      : status === "active"
-      ? activeTodos
-      : completedTodos;
-  const [response, setResponse] = useState({ slip: {} });
+  const [response, setResponse] = useState([]);
   const getData = async () => {
     try {
       const response = await axios.get(
@@ -32,30 +20,43 @@ function App() {
   useEffect(() => {
     getData();
   }, []);
+  const [isDark, setIsDark] = useState(false);
+
+  const [status, setStatus] = useState("all");
+  const [checkedTodo, setCheckedTodo] = useState(false);
+  const completedTodos = response.filter((response) => response.completed);
+  const activeTodos = response.filter((response) => !response.completed);
+  const array =
+    status === "all"
+      ? response
+      : status === "active"
+      ? activeTodos
+      : completedTodos;
+
   function addTodo(todoText) {
     if (todoText.trim() !== "") {
       let newTodo = { id: Date.now(), text: todoText, completed: false };
-      setTodos([...todos, newTodo]);
+      setResponse([...response, newTodo]);
     }
     if (checkedTodo) {
       let newTodo = { id: Date.now(), text: todoText, completed: true };
-      setTodos([...todos, newTodo]);
+      setResponse([...response, newTodo]);
     }
   }
   function inputCheck() {
     setCheckedTodo(!checkedTodo);
   }
   function deleteTodo(id) {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
+    const updatedTodos = response.filter((response) => response.id !== id);
+    setResponse(updatedTodos);
   }
   function deleteComplated() {
-    const filteredTodos = todos.filter((todo) => !todo.completed);
-    setTodos(filteredTodos);
+    const filteredTodos = response.filter((response) => !response.completed);
+    setResponse(filteredTodos);
   }
   function changeCircle(id) {
-    setTodos(
-      todos.map((todo) => {
+    setResponse(
+      response.map((todo) => {
         if (todo.id === id) {
           return { ...todo, completed: !todo.completed };
         } else {
@@ -127,7 +128,7 @@ function App() {
           />
         </div>
 
-        {todos.length > 0 && (
+        {response.length > 0 && (
           <div>
             <div
               className="toDos"
@@ -138,19 +139,19 @@ function App() {
                   : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)",
               }}
             >
-              {array.map((todo) => (
-                <div className="toDo" key={todo.id}>
+              {array.map((response) => (
+                <div className="toDo" key={response.id}>
                   <div className="checkAndText">
                     <div
                       className="circle"
-                      onClick={() => changeCircle(todo.id)}
+                      onClick={() => changeCircle(response.id)}
                       style={{
-                        background: todo.completed
+                        background: response.completed
                           ? "linear-gradient(rgba(85, 221, 255, 1), rgba(192, 88, 243, 1))"
                           : "transparent",
                       }}
                     >
-                      {todo.completed ? (
+                      {response.completed ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="11"
@@ -170,24 +171,24 @@ function App() {
                     <div
                       className="toDoText"
                       style={{
-                        textDecorationLine: todo.completed
+                        textDecorationLine: response.completed
                           ? "line-through"
                           : "none",
                         color:
-                          todo.completed && !isDark
+                          response.completed && !isDark
                             ? "#D1D2DA"
-                            : !todo.completed && isDark
+                            : !response.completed && isDark
                             ? "#C8CBE7"
-                            : todo.completed && isDark
+                            : response.completed && isDark
                             ? "#494C6B"
                             : "#494C6B",
                       }}
                     >
-                      {todo.text}
+                      {response.text}
                     </div>
                   </div>
                   <svg
-                    onClick={() => deleteTodo(todo.id)}
+                    onClick={() => deleteTodo(response.id)}
                     className="cross"
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
