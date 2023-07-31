@@ -1,6 +1,6 @@
 import "./App.css";
-
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 import logo from "./images/TODO.png";
 import sun from "./images/icon-sun.svg";
 import moon from "./images/icon-moon.svg";
@@ -18,7 +18,20 @@ function App() {
       : status === "active"
       ? activeTodos
       : completedTodos;
-
+  const [response, setResponse] = useState({ slip: {} });
+  const getData = async () => {
+    try {
+      const response = await axios.get(
+        "https://todoapp-ep3t.onrender.com/api/todos"
+      );
+      setResponse(response.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   function addTodo(todoText) {
     if (todoText.trim() !== "") {
       let newTodo = { id: Date.now(), text: todoText, completed: false };
@@ -59,9 +72,7 @@ function App() {
     <div className={isDark ? "app dark" : "app"}>
       <div className={isDark ? "app dark" : "app"}>
         <div className="headText">
-          <img src={logo} alt="TODO"
-          onClick={() => window.location.reload()}
-          />
+          <img src={logo} alt="TODO" onClick={() => window.location.reload()} />
 
           <img
             onClick={() => makeDark()}
@@ -136,7 +147,7 @@ function App() {
                       style={{
                         background: todo.completed
                           ? "linear-gradient(rgba(85, 221, 255, 1), rgba(192, 88, 243, 1))"
-                          : "transparent",  
+                          : "transparent",
                       }}
                     >
                       {todo.completed ? (
@@ -159,10 +170,18 @@ function App() {
                     <div
                       className="toDoText"
                       style={{
-                      textDecorationLine: todo.completed ? "line-through" : "none",
-                      color: todo.completed && !isDark ? "#D1D2DA" : !todo.completed && isDark ? "#C8CBE7" : todo.completed && isDark ? "#494C6B" : "#494C6B"
-                    }}
-                      
+                        textDecorationLine: todo.completed
+                          ? "line-through"
+                          : "none",
+                        color:
+                          todo.completed && !isDark
+                            ? "#D1D2DA"
+                            : !todo.completed && isDark
+                            ? "#C8CBE7"
+                            : todo.completed && isDark
+                            ? "#494C6B"
+                            : "#494C6B",
+                      }}
                     >
                       {todo.text}
                     </div>
@@ -190,7 +209,9 @@ function App() {
                 style={{ color: isDark ? "#5B5E7E" : "#9495A5" }}
               >
                 <p>{array.length} items left</p>
-                <p className="clear" onClick={() => deleteComplated()}>Clear Completed</p>
+                <p className="clear" onClick={() => deleteComplated()}>
+                  Clear Completed
+                </p>
               </div>
             </div>
             <div
