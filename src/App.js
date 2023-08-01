@@ -32,12 +32,28 @@ function App() {
       : status === "active"
       ? activeTodos
       : completedTodos;
-
+  console.log(response);
   function addTodo(todoText) {
     if (todoText.trim() !== "") {
-      let newTodo = { id: Date.now(), text: todoText, completed: false };
-      setResponse([...response, newTodo]);
+      const newTodo = { text: todoText, active: checkedTodo };
+      axios
+        .post("https://todoapp-ep3t.onrender.com/api/todos", newTodo)
+        .then((res) => {
+          console.log(res.data);
+          setResponse([
+            ...response,
+            {
+              text: res.data.text,
+              completed: res.data.active,
+              id: res.data.id,
+            },
+          ]);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
     }
+
     if (checkedTodo) {
       let newTodo = { id: Date.now(), text: todoText, completed: true };
       setResponse([...response, newTodo]);
