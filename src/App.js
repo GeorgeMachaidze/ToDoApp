@@ -32,14 +32,13 @@ function App() {
       : status === "active"
       ? activeTodos
       : completedTodos;
-  console.log(response);
+
   function addTodo(todoText) {
     if (todoText.trim() !== "") {
       const newTodo = { text: todoText, active: checkedTodo };
       axios
         .post("https://todoapp-ep3t.onrender.com/api/todos", newTodo)
         .then((res) => {
-          console.log(res.data);
           setResponse([
             ...response,
             {
@@ -63,8 +62,15 @@ function App() {
     setCheckedTodo(!checkedTodo);
   }
   function deleteTodo(id) {
-    const updatedTodos = response.filter((response) => response.id !== id);
-    setResponse(updatedTodos);
+    axios
+      .delete(`https://todoapp-ep3t.onrender.com/api/todos/${id}`)
+      .then((res) => {
+        const updatedTodos = response.filter((todo) => todo.id !== id);
+        setResponse(updatedTodos);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   }
   function deleteComplated() {
     const filteredTodos = response.filter((response) => !response.completed);
