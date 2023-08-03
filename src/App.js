@@ -24,8 +24,8 @@ function App() {
 
   const [status, setStatus] = useState("all");
   const [checkedTodo, setCheckedTodo] = useState(false);
-  const completedTodos = response.filter((response) => response.completed);
-  const activeTodos = response.filter((response) => !response.completed);
+  const completedTodos = response.filter((response) => response.active);
+  const activeTodos = response.filter((response) => !response.active);
   const array =
     status === "all"
       ? response
@@ -43,7 +43,7 @@ function App() {
             ...response,
             {
               text: res.data.text,
-              completed: res.data.active,
+              active: res.data.active,
               id: res.data.id,
             },
           ]);
@@ -52,10 +52,9 @@ function App() {
           console.log(error.response);
         });
     }
-
     if (checkedTodo) {
-      let newTodo = { id: Date.now(), text: todoText, completed: true };
-      setResponse([...response, newTodo]);
+      let newTodoItem = { id: Date.now(), text: todoText, completed: true };
+      setResponse([...response, newTodoItem]);
     }
   }
   function inputCheck() {
@@ -72,25 +71,58 @@ function App() {
         console.log(error.response);
       });
   }
-  function deleteComplated() {
-    const filteredTodos = response.filter((response) => !response.completed);
-    setResponse(filteredTodos);
+  function deleteAllCompletedTodos() {
+    const completedTodoIds = response
+      .filter((todo) => todo.completed)
+      .map((todo) => todo.id);
+
+    axios
+      .delete("https://todoapp-ep3t.onrender.com/api/todos/active")
+      .then(() => {
+        // Remove completed todos from the state
+        const updatedTodos = response.filter((todo) => !todo.active);
+        setResponse(updatedTodos);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }
+  function updateTodoStatus(id, completed) {
+    const updatedTodo = {
+      completed: completed,
+    };
+
+    axios
+      .put(`https://todoapp-ep3t.onrender.com/api/todos/${id}`, updatedTodo)
+      .then(() => {
+        // Update the status of the todo in the state
+        setResponse(
+          response.map((todo) => {
+            if (todo.id === id) {
+              return { ...todo, active: completed };
+            } else {
+              return todo;
+            }
+          })
+        );
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   }
   function changeCircle(id) {
-    setResponse(
-      response.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, completed: !todo.completed };
-        } else {
-          return todo;
-        }
-      })
-    );
+    // Find the todo in the response state array
+    const todo = response.find((todo) => todo.id === id);
+    if (todo) {
+      // Toggle the status and call updateTodoStatus function
+      const newStatus = !todo.active;
+      updateTodoStatus(id, newStatus);
+    }
   }
   function makeDark() {
     setIsDark(!isDark);
   }
-
+  console.log(array);
   return (
     <div className={isDark ? "app dark" : "app"}>
       <div className={isDark ? "app dark" : "app"}>
@@ -168,12 +200,12 @@ function App() {
                       className="circle"
                       onClick={() => changeCircle(response.id)}
                       style={{
-                        background: response.completed
+                        background: response.active
                           ? "linear-gradient(rgba(85, 221, 255, 1), rgba(192, 88, 243, 1))"
                           : "transparent",
                       }}
                     >
-                      {response.completed ? (
+                      {response.active ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="11"
@@ -193,15 +225,15 @@ function App() {
                     <div
                       className="toDoText"
                       style={{
-                        textDecorationLine: response.completed
+                        textDecorationLine: response.active
                           ? "line-through"
                           : "none",
                         color:
-                          response.completed && !isDark
+                          response.active && !isDark
                             ? "#D1D2DA"
-                            : !response.completed && isDark
+                            : !response.active && isDark
                             ? "#C8CBE7"
-                            : response.completed && isDark
+                            : response.active && isDark
                             ? "#494C6B"
                             : "#494C6B",
                       }}
@@ -232,7 +264,7 @@ function App() {
                 style={{ color: isDark ? "#5B5E7E" : "#9495A5" }}
               >
                 <p>{array.length} items left</p>
-                <p className="clear" onClick={() => deleteComplated()}>
+                <p className="clear" onClick={() => deleteAllCompletedTodos()}>
                   Clear Completed
                 </p>
               </div>
